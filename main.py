@@ -70,7 +70,6 @@ for station in weather_stations:
             
             # Request error
             if (data == "failed"): 
-                continue
                 if (http_failed > allowed_errors):
                     break    
                 else:
