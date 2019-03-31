@@ -1,4 +1,4 @@
-import csv
+import csv, re
 
 def moisture(stations):
     with open('stations.csv') as csv_file:
@@ -25,8 +25,8 @@ def moisture(stations):
                 "id": ID,
                 "name": name,
                 "startDate": row[1],
-                "lat": row[2],
-                "lng": row[3],
+                "lat": float(row[2]),
+                "lng": float(row[3]),
             }
             stations.append(station)
 
@@ -37,7 +37,12 @@ def weather(stations):
         for row in csv_reader:
             station = {
                 "id": row[0],
-                "lat": row[1],
-                "lng": row[2]
+                "lat": float( o_n(row[2]) ),
+                "lng": float( o_n(row[3]) )
             }
-            stations.append(station) 
+            stations.append(station)
+
+def o_n(_str):
+    if _str == '' or _str == '#FIELD!': return 0
+    print(':'+ _str  +':')
+    return _str.replace(' ', '')
