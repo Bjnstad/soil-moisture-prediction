@@ -44,5 +44,4 @@ def weather(stations):
 
 def o_n(_str):
     if _str == '' or _str == '#FIELD!': return 0
-    print(':'+ _str  +':')
     return _str.replace(' ', '')
