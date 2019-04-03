@@ -84,3 +84,13 @@ class Cell():
     def __init__(self, _scan: SCAN, _weather_stations=[]):
         self._scan = _scan
         self._weather_stations = _weather_stations
+        
+    """
+        Should download raw weather data and create an weighted average  
+    """
+    def calculate_weighted_average(self):
+        _sum = 0; # Total sum of all stations
+        for _station in self._weather_stations:
+            # TODO: Add value times distance from SCAN station to _sum
+            pass
+        return _sum / len(self._weather_stations)
