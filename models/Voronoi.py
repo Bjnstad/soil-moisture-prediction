@@ -2,6 +2,9 @@ from scipy.spatial import Voronoi as V
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.point import Point
 from models.Station import SCAN, Weather
+import numpy as np
+import math
+
 
 class Voronoi():
     """
@@ -52,8 +55,8 @@ class Voronoi():
             # Loop weather stations and add them to cell
             for _station in self._weather_stations:
                 _point = Point( _station._coord.lat, _station._coord.lng )
-                if _polygon.contains( _point ): # if weather station is inside cell
-                    _cell._weather_stations.append( _station ) # Add weather station to cell
+                if _polygon.contains( _point ):  # if weather station is inside cell
+                    _cell._weather_stations.append( _station )  # Add weather station to cell
 
             # Add cell to list
             self._cells.append( _cell ) 
@@ -81,16 +84,24 @@ class Cell():
         SCAN station that is relevant for the 
     """
 
-    def __init__(self, _scan: SCAN, _weather_stations=[]):
+    def __init__(self, _scan: SCAN, _weather_stations=[Weather]):
         self._scan = _scan
         self._weather_stations = _weather_stations
         
     """
         Should download raw weather data and create an weighted average  
     """
+
     def calculate_weighted_average(self):
-        _sum = 0; # Total sum of all stations
-        for _station in self._weather_stations:
+        _sum = 0  # Total sum of all stations
+        _distance = 0  # Distance from weather_station to scan_station station
+
+        for station in self._weather_stations:
             # TODO: Add value times distance from SCAN station to _sum
+            x1 = self._scan._coord.lat
+            x2 = self._scan._coord.lng
+            y1 = station._coord.lat
+            y2 = station._coord.lng
+            _distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
             pass
         return _sum / len(self._weather_stations)
