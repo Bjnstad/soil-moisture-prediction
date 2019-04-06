@@ -12,12 +12,18 @@ class Weather(Station):
     def __init__( self, _id: str, _coord: Coord ):
         super().__init__(_id, _coord)
         self._values = []
-   
-   
-   """
+
+        _delta = 3650
+        for _index in range(0, _delta):
+            self._values.append(_index)
+       
+    """
         Load raw data from database
     """
     def loadData(self):
+        pass
+    
+    """
         try:
             with urllib.request.urlopen(url5, timeout=120) as url2:
                 data = json.loads(url2.read().decode('utf-8'))
@@ -33,7 +39,7 @@ class Weather(Station):
             print('--- failour ---')
             print(e.reason)
             return "failed"
-
+    """
 
 
 class SCAN(Station):

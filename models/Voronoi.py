@@ -54,6 +54,7 @@ class Voronoi():
             # Loop weather stations and add them to cell
             for _station in self._weather_stations:
                 _point = Point( _station._coord.lat, _station._coord.lng )
+                # print(_polygon)
                 if _polygon.contains( _point ):  # if weather station is inside cell
                     _cell._weather_stations.append( _station )  # Add weather station to cell
 
@@ -97,7 +98,9 @@ class Cell():
         # Loop each day and add weighted average
         _weighted_average = []
         for _index in range(0, _delta):
-            _weighted_average.append(self.calculate_weighted_average(_index))
+            _v = self.calculate_weighted_average(_index)
+            print(_v)
+            _weighted_average.append(_v)
         
         # TODO: Store values in databasee
 
@@ -112,6 +115,8 @@ class Cell():
         day : int 
             Is the index of the current day
     """
+
+    # TODO: Skip days with null value in measeure data 
     def calculate_weighted_average(self, day):
         _sum = 0  # Total sum of all stations
         _distance = 0  # Distance from weather_station to scan_station station
@@ -120,14 +125,15 @@ class Cell():
         _station_weight = 0
         _total_weights = 0
 
-        for index, station in self._weather_stations:
+        for station in self._weather_stations:
             # TODO: Add value times distance from SCAN station to _sum
             scan_lat = self._scan._coord.lat
             scan_lng = self._scan._coord.lng
             station_lat = station._coord.lat
             station_lng = station._coord.lng
             _distance = math.sqrt((scan_lat - scan_lng) ** 2 + (station_lat - station_lng) ** 2)
-            _all_distances[index] = _distance
+            
+            print(_distance)
             # TODO: we need to find weights
             if _distance < _max_distance:
                 weight = _distance*(-(1/_max_distance))+1
