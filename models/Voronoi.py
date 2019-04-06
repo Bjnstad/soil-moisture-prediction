@@ -31,7 +31,6 @@ class Voronoi():
         self._weather_stations = _weather_stations
         self.map_cells()
 
-
     def map_cells(self):
         # Calculate Voronoi
         _voronoi = V(self.get_scan_coordinates())
@@ -91,14 +90,14 @@ class Cell():
         self._weather_stations = _weather_stations
 
         for station in self._weather_stations:
-            station.loadData
+            station.loadData()
 
         _delta = 3650
 
         # Loop each day and add weighted average
         _weighted_average = []
-        for _index in enumerate(_delta):
-            _weighted_average.append( cacluate_weighted_average(_index) )
+        for _index in range(0, _delta):
+            _weighted_average.append(self.calculate_weighted_average(_index))
         
         # TODO: Store values in databasee
 
@@ -110,19 +109,29 @@ class Cell():
     """
         Calculate weighted average for one day.
 
-        dat : int 
+        day : int 
             Is the index of the current day
     """
     def calculate_weighted_average(self, day):
         _sum = 0  # Total sum of all stations
         _distance = 0  # Distance from weather_station to scan_station station
+        _all_distances = []
+        _max_distance = 10
+        _station_weight = 0
+        _sum_weights = 0
 
-        for station in self._weather_stations:
+        for index, station in self._weather_stations:
             # TODO: Add value times distance from SCAN station to _sum
-            x1 = self._scan._coord.lat
-            x2 = self._scan._coord.lng
-            y1 = station._coord.lat
-            y2 = station._coord.lng
-            _distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-            pass
-        return _sum / len(self._weather_stations)
+            scan_lat = self._scan._coord.lat
+            scan_lng = self._scan._coord.lng
+            station_lat = station._coord.lat
+            station_lng = station._coord.lng
+            _distance = math.sqrt((scan_lat - scan_lng) ** 2 + (station_lat - station_lng) ** 2)
+            _all_distances[index] = _distance
+            # TODO: we need to find weights
+
+            weight = 0
+            _sum += station._value[day]*weight
+            _sum_weights += weight
+
+        return _sum*_sum_weights / len(self._weather_stations)
