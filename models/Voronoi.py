@@ -4,6 +4,7 @@ from shapely.geometry.point import Point
 from models.Station import SCAN, Weather
 import numpy as np
 import math
+import geopy.distance
 
 
 class Voronoi():
@@ -30,6 +31,7 @@ class Voronoi():
         self._scan_stations = _scans
         self._weather_stations = _weather_stations
         self.map_cells()
+
 
     def map_cells(self):
         # Calculate Voronoi
@@ -59,7 +61,8 @@ class Voronoi():
                     _cell._weather_stations.append( _station )  # Add weather station to cell
 
             # Add cell to list
-            self._cells.append( _cell ) 
+            self._cells.append( _cell )
+            _cell.calculate()
             _ri += 1
     
     
@@ -90,10 +93,11 @@ class Cell():
         self._scan = _scan
         self._weather_stations = _weather_stations
 
+    def calculate(self):
         for station in self._weather_stations:
             station.loadData()
 
-        _delta = 3650
+        _delta = 1
 
         # Loop each day and add weighted average
         _weighted_average = []
@@ -119,20 +123,16 @@ class Cell():
     # TODO: Skip days with null value in measeure data 
     def calculate_weighted_average(self, day):
         _sum = 0  # Total sum of all stations
-        _distance = 0  # Distance from weather_station to scan_station station
-        _all_distances = []
         _max_distance = 10
-        _station_weight = 0
         _total_weights = 0
 
         for station in self._weather_stations:
             # TODO: Add value times distance from SCAN station to _sum
-            scan_lat = self._scan._coord.lat
-            scan_lng = self._scan._coord.lng
-            station_lat = station._coord.lat
-            station_lng = station._coord.lng
-            _distance = math.sqrt((scan_lat - scan_lng) ** 2 + (station_lat - station_lng) ** 2)
-            
+            scan_coords = [self._scan._coord.lat, self._scan._coord.lng]
+            station_coords = [station._coord.lat, station._coord.lng]
+            _distance = geopy.distance.distance(scan_coords, station_coords).km
+            # _distance = math.hypot(scan_coords.lng - scan_coords.lat, station_coords.lng - station_coords.lat)
+
             print(_distance)
             # TODO: we need to find weights
             if _distance < _max_distance:
