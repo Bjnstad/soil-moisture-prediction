@@ -89,12 +89,31 @@ class Cell():
             _weather_stations = [Weather]
         self._scan = _scan
         self._weather_stations = _weather_stations
+
+        for station in self._weather_stations:
+            station.loadData
+
+        _delta = 3650
+
+        # Loop each day and add weighted average
+        _weighted_average = []
+        for _index in enumerate(_delta):
+            _weighted_average.append( cacluate_weighted_average(_index) )
         
+        # TODO: Store values in databasee
+
     """
         Should download raw weather data and create an weighted average  
     """
 
-    def calculate_weighted_average(self):
+
+    """
+        Calculate weighted average for one day.
+
+        dat : int 
+            Is the index of the current day
+    """
+    def calculate_weighted_average(self, day):
         _sum = 0  # Total sum of all stations
         _distance = 0  # Distance from weather_station to scan_station station
 

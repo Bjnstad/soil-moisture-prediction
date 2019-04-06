@@ -12,6 +12,13 @@ class Weather(Station):
     def __init__( self, _id: str, _coord: Coord ):
         super().__init__(_id, _coord)
 
+    """
+        Load raw data from database
+    """
+    def loadData(self):
+        self._values = []
+
+
 class SCAN(Station):
     def __init__( self, _id: str, _coord: Coord ):
         super().__init__(_id, _coord)
