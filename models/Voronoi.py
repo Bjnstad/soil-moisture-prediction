@@ -84,7 +84,9 @@ class Cell():
         SCAN station that is relevant for the 
     """
 
-    def __init__(self, _scan: SCAN, _weather_stations=[Weather]):
+    def __init__(self, _scan: SCAN, _weather_stations=[]):
+        if _weather_stations is None:
+            _weather_stations = [Weather]
         self._scan = _scan
         self._weather_stations = _weather_stations
         
