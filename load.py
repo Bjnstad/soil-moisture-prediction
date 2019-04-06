@@ -33,7 +33,7 @@ def weather():
         csv_reader = csv.reader(csv_file, delimiter=';')
         first = True
         for row in csv_reader:
-            _coord = Coord(float( o_n(row[2]) ), float( o_n(row[2])))
+            _coord = Coord(float( o_n(row[2]) ), float( o_n(row[3])))
             stations.append( Weather( row[0], _coord) )
     return stations
 
