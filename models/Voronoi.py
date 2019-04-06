@@ -118,7 +118,7 @@ class Cell():
         _all_distances = []
         _max_distance = 10
         _station_weight = 0
-        _sum_weights = 0
+        _total_weights = 0
 
         for index, station in self._weather_stations:
             # TODO: Add value times distance from SCAN station to _sum
@@ -129,8 +129,12 @@ class Cell():
             _distance = math.sqrt((scan_lat - scan_lng) ** 2 + (station_lat - station_lng) ** 2)
             _all_distances[index] = _distance
             # TODO: we need to find weights
-            if(_distance < _max_distance):
+            if _distance < _max_distance:
                 weight = _distance*(-(1/_max_distance))+1
                 _sum += station._value[day]*weight
-                _sum_weights += weight
-        return _sum / _sum_weights
+                _total_weights += 1
+
+        if _total_weights > 0:
+            return _sum / _total_weights
+
+        return 0
