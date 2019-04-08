@@ -109,9 +109,8 @@ class Cell():
         # TODO: Store values in databasee
 
     """
-        Should download raw weather data and create an weighted average  
+        Should download raw weather data and create an weighted average data and create an weighted average  
     """
-
 
     """
         Calculate weighted average for one day.
