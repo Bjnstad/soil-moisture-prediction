@@ -6,32 +6,12 @@ import numpy as np
 import math
 import geopy.distance
 
-
 class Voronoi():
-    """
-    This create a Voronoi map of Scan and weather stations.
-    ...
-
-    Attributes
-    ----------
-    _scan : list[SCAN]
-        List of scan stations
-    _weather : list[Weather]
-        List of weather stations
-        _
-    Methods
-    -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
-    """
-
-    _cells = []
-
     def __init__(self, _scans, _weather_stations):
         self._scan_stations = _scans
         self._weather_stations = _weather_stations
+        self._cells = [] # TODO: Remove?
         self.map_cells()
-
 
     def map_cells(self):
         # Calculate Voronoi
@@ -56,7 +36,6 @@ class Voronoi():
             # Loop weather stations and add them to cell
             for _station in self._weather_stations:
                 _point = Point( _station._coord.lat, _station._coord.lng )
-                # print(_polygon)
                 if _polygon.contains( _point ):  # if weather station is inside cell
                     _cell._weather_stations.append( _station )  # Add weather station to cell
 
@@ -75,17 +54,7 @@ class Voronoi():
             ])
         return _coords
 
-
 class Cell():
-    """
-    This is an cell in a Vorronoi Tessolation map.
-    ...
-
-    Attributes
-    ----------
-    _soil : Soil
-        SCAN station that is relevant for the 
-    """
 
     def __init__(self, _scan: SCAN, _weather_stations=[]):
         if _weather_stations is None:
@@ -99,31 +68,23 @@ class Cell():
 
         _delta = 1
 
+        print('----- ' + station._id + '-----')
+
         # Loop each day and add weighted average
         _weighted_average = []
         for _index in range(0, _delta):
             _v = self.calculate_weighted_average(_index)
-            print(_v)
             _weighted_average.append(_v)
-        
+            if _v > -1:
+                print(_v)
         # TODO: Store values in databasee
 
-    """
-        Should download raw weather data and create an weighted average  
-    """
-
-
-    """
-        Calculate weighted average for one day.
-
-        day : int 
-            Is the index of the current day
-    """
-
+    
+    
     # TODO: Skip days with null value in measeure data 
     def calculate_weighted_average(self, day):
-        _sum = 0  # Total sum of all stations
-        _max_distance = 10
+        _sum = 0  # Total sum of all stations with weight relation
+        _max_distance = 100
         _total_weights = 0
 
         for station in self._weather_stations:
@@ -131,16 +92,14 @@ class Cell():
             scan_coords = [self._scan._coord.lat, self._scan._coord.lng]
             station_coords = [station._coord.lat, station._coord.lng]
             _distance = geopy.distance.distance(scan_coords, station_coords).km
-            # _distance = math.hypot(scan_coords.lng - scan_coords.lat, station_coords.lng - station_coords.lat)
-
-            print(_distance)
-            # TODO: we need to find weights
+            
             if _distance < _max_distance:
-                weight = _distance*(-(1/_max_distance))+1
-                _sum += station._value[day]*weight
+                print(_distance)
+                _weight = _distance * ( -( 1 / _max_distance ) ) +1
+                _sum += station._value[day] * _weight
                 _total_weights += 1
 
         if _total_weights > 0:
             return _sum / _total_weights
 
-        return 0
+        return -1 # No value found
