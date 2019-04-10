@@ -2,6 +2,7 @@ from scipy.spatial import Voronoi as V
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.point import Point
 from models.Station import SCAN, Weather
+from dateutil.parser import parse
 import numpy as np
 import math
 import geopy.distance
@@ -10,7 +11,7 @@ class Voronoi():
     def __init__(self, _scans, _weather_stations):
         self._scan_stations = _scans
         self._weather_stations = _weather_stations
-        self._cells = [] # TODO: Remove?
+        self._cells = []
         self.map_cells()
 
     def map_cells(self):
@@ -55,7 +56,6 @@ class Voronoi():
         return _coords
 
 class Cell():
-
     def __init__(self, _scan: SCAN, _weather_stations=[]):
         if _weather_stations is None:
             _weather_stations = [Weather]
@@ -64,9 +64,10 @@ class Cell():
 
     def calculate(self):
         for station in self._weather_stations:
-            station.loadData()
+            station.loadValues()
+            station.validateValues( parse("2009-03-03"), parse("2019-03-03") )
 
-        _delta = 1
+        _delta = (parse("2009-03-03") - parse("2019-03-03")).days
 
         print('----- ' + station._id + '-----')
 
@@ -79,25 +80,19 @@ class Cell():
                 print(_v)
         # TODO: Store values in databasee
 
-    
-    
     # TODO: Skip days with null value in measeure data 
     def calculate_weighted_average(self, day):
-        _sum = 0  # Total sum of all stations with weight relation
-        _max_distance = 100
+        _sum = 0  # Total sum of all stations
         _total_weights = 0
 
         for station in self._weather_stations:
-            # TODO: Add value times distance from SCAN station to _sum
             scan_coords = [self._scan._coord.lat, self._scan._coord.lng]
             station_coords = [station._coord.lat, station._coord.lng]
             _distance = geopy.distance.distance(scan_coords, station_coords).km
-            
-            if _distance < _max_distance:
-                print(_distance)
-                _weight = _distance * ( -( 1 / _max_distance ) ) +1
-                _sum += station._value[day] * _weight
-                _total_weights += 1
+
+            weight = 1/_distance
+            # _sum += station._value[day]*weight
+            _total_weights += weight
 
         if _total_weights > 0:
             return _sum / _total_weights
