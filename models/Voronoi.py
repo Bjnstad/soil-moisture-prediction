@@ -7,14 +7,12 @@ import numpy as np
 import math
 import geopy.distance
 
-
 class Voronoi():
     def __init__(self, _scans, _weather_stations):
         self._scan_stations = _scans
         self._weather_stations = _weather_stations
         self._cells = []
         self.map_cells()
-
 
     def map_cells(self):
         # Calculate Voronoi
@@ -39,7 +37,6 @@ class Voronoi():
             # Loop weather stations and add them to cell
             for _station in self._weather_stations:
                 _point = Point( _station._coord.lat, _station._coord.lng )
-                # print(_polygon)
                 if _polygon.contains( _point ):  # if weather station is inside cell
                     _cell._weather_stations.append( _station )  # Add weather station to cell
 
@@ -58,7 +55,6 @@ class Voronoi():
             ])
         return _coords
 
-
 class Cell():
     def __init__(self, _scan: SCAN, _weather_stations=[]):
         if _weather_stations is None:
@@ -73,13 +69,15 @@ class Cell():
 
         _delta = (parse("2009-03-03") - parse("2019-03-03")).days
 
+        print('----- ' + station._id + '-----')
+
         # Loop each day and add weighted average
         _weighted_average = []
         for _index in range(0, _delta):
             _v = self.calculate_weighted_average(_index)
-            print(_v)
             _weighted_average.append(_v)
-        
+            if _v > -1:
+                print(_v)
         # TODO: Store values in databasee
 
     # TODO: Skip days with null value in measeure data 
@@ -99,4 +97,4 @@ class Cell():
         if _total_weights > 0:
             return _sum / _total_weights
 
-        return 0
+        return -1 # No value found

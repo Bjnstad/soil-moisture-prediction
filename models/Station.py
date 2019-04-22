@@ -1,4 +1,5 @@
-import urllib.request, json, datetime
+from datetime import datetime
+import urllib.request, json, datetime, datetime
 
 class Coord():
     def __init__(self, lat, lng):
@@ -57,7 +58,6 @@ class Weather(Station):
             return "failed"
         except Exception as e:
             print(e)
-    
 
 class SCAN(Station):
     def __init__( self, _id: str, _coord: Coord ):
