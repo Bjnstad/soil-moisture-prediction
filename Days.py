@@ -1,3 +1,6 @@
+import numpy as np
+from sklearn import preprocessing
+
 class Days:
 
     def __init__(self):
@@ -10,14 +13,21 @@ class Days:
         self._precip.append( _precip )
         self._moist_2.append( _moist_2 )
     
-    # TODO: Add normalisation?
     def get_date(self):
-        return self._date
+        return np.array(self._date)
 
-    # TODO: Add normalisation?
     def get_precip(self):
-        return self._precip
+        _tmp = self.norm(self._precip)
+        return _tmp
     
-    # TODO: Add normalisation?
     def get_moist_2(self):
-        return self._moist_2
+        _tmp = self.norm(self._moist_2)
+        return _tmp
+
+    def norm(self, x):
+        _tmp = np.array(x).reshape(-1, 1)
+        
+        _res = []
+        for i in _tmp:
+            _res.append(_tmp)
+        return np.array(_res)

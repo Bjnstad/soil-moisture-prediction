@@ -1,8 +1,11 @@
+#!/usr/local/bin/python3.6
+
 from keras.models import Model
 from keras.models import Sequential
-from keras.layers import Dense, Activation, LSTM, concatenate, Input
+from keras.layers import Dense, Activation, LSTM, concatenate, Input, Flatten
 from keras.callbacks import TensorBoard
 
+import load
 
 def build_model(data_length, label_length):
 
@@ -14,18 +17,18 @@ def build_model(data_length, label_length):
 
     output = concatenate(
         [
-            precipLayers,
             soilmoLayer,
+            precipLayers,
         ]
     )
 
-    output = Dense(label_length, activation='linear', name='weighted_average_output')(output)
+    output = Dense(label_length, activation='linear', name='weightedAverage_output')(output)
 
     model = Model(
         inputs=
         [
-            precipitation,
             soilmoisture,
+            precipitation,
         ],
         outputs=
         [
@@ -40,30 +43,34 @@ def build_model(data_length, label_length):
 
 if __name__ == '__main__':
 
-    training_data, training_labels, testing_data, testing_labels = loader.loadObjectFromPickle(PATH)
-    tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=0, write_graph=True, write_images=True)
+    _days = load.new()
 
-    rnn = build_model(3650, 3)
+
+    # tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=0, write_graph=True, write_images=True)
+
+    rnn = build_model( len(_days.get_date()), 1 )
 
     rnn.fit(
         [
-            training_data["precipitation"],
-            training_data["soilmoisture"],
+            _days.get_moist_2(),
+            _days.get_precip()
         ],
         [
-            training_labels["soilmoisture"]
+            _days.get_date()
         ],
         validation_data=(
             [
-                testing_data["precipitation"],
-                testing_data["soilmoisture"],
+                _days.get_moist_2(),
+                _days.get_precip()
             ],
             [
-                testing_labels["soilmoisture"]
-            ]),
+                _days.get_date() 
+            ]
+        ),
         epochs=1,
-        batch_size=3000,
-        callbacks=[
-            tbCallBack
-        ]
+        batch_size=32,
+        #callbacks=[
+            #TensorBoard.createTensorboardConfig('logs/Graph')
+            #tbCallBack
+        #]
     )

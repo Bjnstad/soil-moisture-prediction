@@ -52,6 +52,7 @@ def new():
         
         _days = Days.Days()
         
+        i = 0
         for row in csv_reader:
             # Skip first row
             if first:
@@ -79,6 +80,7 @@ def new():
             _precip_accumulation    = row[19]
             """
             
-            _days.add_day(row[0], float( o_n(row[3]) ), float( o_n(row[7]) ))
+            _days.add_day(i, float( o_n(row[3]) ), float( o_n(row[7]) ))
+            i += 1
 
         return _days
