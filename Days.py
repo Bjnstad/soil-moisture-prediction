@@ -23,6 +23,8 @@ class Days:
     def get_moist_2(self):
         _tmp = self.norm(self._moist_2)
         return _tmp
+    def get_moist_2_labels(self):
+        return np.array(self._moist_2).reshape(-1, 1)
 
     def norm(self, x):
         _tmp = np.array(x).reshape(-1, 1)

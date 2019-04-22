@@ -45,8 +45,7 @@ if __name__ == '__main__':
 
     _days = load.new()
 
-
-    # tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=0, write_graph=True, write_images=True)
+    tensorboard = TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=False)
 
     rnn = build_model( len(_days.get_date()), 1 )
 
@@ -56,7 +55,7 @@ if __name__ == '__main__':
             _days.get_precip()
         ],
         [
-            _days.get_date()
+            _days.get_moist_2_labels()
         ],
         validation_data=(
             [
@@ -64,13 +63,10 @@ if __name__ == '__main__':
                 _days.get_precip()
             ],
             [
-                _days.get_date() 
+                _days.get_moist_2_labels() 
             ]
         ),
-        epochs=1,
+        epochs=20,
         batch_size=32,
-        #callbacks=[
-            #TensorBoard.createTensorboardConfig('logs/Graph')
-            #tbCallBack
-        #]
+        callbacks=[tensorboard]
     )
