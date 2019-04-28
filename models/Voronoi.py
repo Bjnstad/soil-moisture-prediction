@@ -7,6 +7,7 @@ import geopy.distance
 import numpy as np
 import math
 
+
 class Voronoi:
     def __init__(self, _scans, _weather_stations):
         self._scan_stations = _scans
@@ -61,6 +62,7 @@ class Cell:
         if _weather_stations is None:
             _weather_stations = [Weather]
         self._scan = _scan
+        print("new cell")
         self._weather_stations = _weather_stations
 
     def calculate(self):
