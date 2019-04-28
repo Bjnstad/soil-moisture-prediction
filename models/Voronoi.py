@@ -3,11 +3,11 @@ from shapely.geometry.polygon import Polygon
 from shapely.geometry.point import Point
 from models.Station import SCAN, Weather
 from dateutil.parser import parse
+import geopy.distance
 import numpy as np
 import math
-import geopy.distance
 
-class Voronoi():
+class Voronoi:
     def __init__(self, _scans, _weather_stations):
         self._scan_stations = _scans
         self._weather_stations = _weather_stations
@@ -18,9 +18,10 @@ class Voronoi():
         # Calculate Voronoi
         _voronoi = V(self.get_scan_coordinates())
         # Loop region
-        _ri = 0 # Dont increment on empty region 
+        _ri = 0  # Dont increment on empty region
         for i, reg in enumerate(_voronoi.regions):
-            if len(reg) == 0: continue # There will always be one empty region
+            if len(reg) == 0:
+                continue  # There will always be one empty region
             
             # Create cell
             _cell = Cell(self._scan_stations[_ri])
@@ -44,8 +45,7 @@ class Voronoi():
             self._cells.append( _cell )
             _cell.calculate()
             _ri += 1
-    
-    
+
     def get_scan_coordinates(self):
         _coords = []
         for _station in self._scan_stations:
@@ -55,7 +55,8 @@ class Voronoi():
             ])
         return _coords
 
-class Cell():
+
+class Cell:
     def __init__(self, _scan: SCAN, _weather_stations=[]):
         if _weather_stations is None:
             _weather_stations = [Weather]
@@ -97,4 +98,4 @@ class Cell():
         if _total_weights > 0:
             return _sum / _total_weights
 
-        return -1 # No value found
+        return -1  # No value found
