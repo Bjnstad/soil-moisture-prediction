@@ -1,12 +1,15 @@
-from lxml import html
-import requests
+import pandas as pd
 import load
 
 _s = load.scan()
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
 
 stations = []
 start = 0
-max = 5
+max = 1
 index = 0
 for i in _s:
     if (index < start):
@@ -31,7 +34,5 @@ for index, station in enumerate(stations):
 urlstring += urlend
 print("\n" + urlstring + "\n")
 
-page = requests.get(urlstring)
-print(page)
-tree = html.fromstring(page.content)
-print(tree)
+df = pd.read_csv(urlstring, comment='#', error_bad_lines=False, delimiter=",")
+print(df)
