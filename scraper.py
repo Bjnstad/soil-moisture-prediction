@@ -9,21 +9,7 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
-"""
-for i in _s:
-    payload = {
-        "id": int(i._id),
-        "lat": float(i._coord.lat),
-        "lng": float(i._coord.lng)
-    }
-
-    r = requests.post(
-        "http://192.168.0.3:8080/station",
-        data=json.dumps(payload),
-        headers = {'Content-type': 'application/json'}
-    )
-    print(r.status_code, r.reason)
-"""
+empty = []
 stations = []
 days = []
 len(_s)
@@ -32,23 +18,8 @@ max = 1
 index = 0
 currentStation = 0
 
-for i in _s:
-    if (index < start):
-        index+=1
-        continue;
-    if (max + start == index): break
-    print(str(i._id) + ',', end='')
-    stations.append(int(i._id))
-    index += 1
 
-
-print("\n")
-print(stations)
-print(len(stations)-1)
-
-
-while currentStation < len(_s):
-    currentStation += max
+def post_station():
     urlstring = "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultipleStationReport,metric/daily/start_of_period/id="
     urlend = "%20AND%20network=%22SCAN%22%20AND%20outServiceDate=%222100-01-01%22%7Cname/2009-01-01,2019-01-01/stationId,name,PRCP::value,TAVG::value,TMAX::value,TMIN::value,SMS:-2:value:hourly%20MEAN,SMS:-4:value:hourly%20MEAN,SMS:-8:value:hourly%20MEAN,SMS:-20:value:hourly%20MEAN,SMS:-40:value:hourly%20MEAN,STO:-2:value:hourly%20MEAN,STO:-4:value:hourly%20MEAN,STO:-8:value:hourly%20MEAN,STO:-20:value:hourly%20MEAN,STO:-40:value:hourly%20MEAN,RHUM::value:hourly%20MEAN,LRADT::value?fitToScreen=false&sortBy=3%3A-1"
     for index, station in enumerate(stations):
@@ -64,7 +35,6 @@ while currentStation < len(_s):
 
     for index, row in df.iterrows():
         stationId = int(row['Station Id'])
-        if (stationId == 2057): continue
         if ( math.isnan(stationId) ): stationId = -1
 
         precip = float(row['Precipitation Increment (mm)'])
@@ -79,10 +49,29 @@ while currentStation < len(_s):
             "precip": precip,
             "moisture": moisture
         })
-
     r = requests.post(
-        "http://192.168.0.3:8080/day",
+        "http://192.168.10.129:8080/day",
         data=json.dumps(days),
         headers={'Content-type': 'application/json'}
     )
-print(r.status_code, r.reason)
+    print(r.status_code, r.reason)
+
+
+while currentStation < len(_s):
+    for i in _s:
+        print("Adding station: " + str(i._id) + " to list stations.", end='')
+        print("\n")
+        print("Currently Fetching data for station with id: "+ str(i._id), end='')
+        print("\n")
+        stations.append(int(i._id))
+        post_station()
+        print("\n")
+        print("Data fetched successfully: ")
+        currentStation += max
+        index += 1
+        stations.clear()
+
+
+print("\n")
+print(stations)
+print(len(stations)-1)
