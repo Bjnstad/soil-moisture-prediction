@@ -9,6 +9,7 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
+counter = 0
 empty = []
 stations = []
 days = []
@@ -59,12 +60,19 @@ def post_station():
 
 while currentStation < len(_s):
     for i in _s:
+        counter += 1
         print("Adding station: " + str(i._id) + " to list stations.", end='')
         print("\n")
         print("Currently Fetching data for station with id: "+ str(i._id), end='')
         print("\n")
+
         stations.append(int(i._id))
-        post_station()
+        if counter < 13:
+            print("Station with id: " + str(stations) + " has already been processed")
+        else:
+            print("Posting station with id: " + str(stations))
+            post_station()
+
         print("\n")
         print("Data fetched successfully: ")
         currentStation += max
@@ -75,3 +83,8 @@ while currentStation < len(_s):
 print("\n")
 print(stations)
 print(len(stations)-1)
+
+"""""
+[  "2030" ,"2085" ,"2090" ,"2091" ,"2083" ,"2053" ,"2175" ,"2115" ,"2179" ,"2056" ,"2176","2182", "2181", "2178", "2114", "2180", "2173", "2055", "2174", "2113", "2177", "2078", "2057"]
+    total = 23
+"""""
