@@ -1,4 +1,5 @@
 from models.Station import SCAN, Weather, Coord
+import urllib.request, json
 import csv, re
 import Days
 
@@ -45,42 +46,16 @@ def o_n(_str):
 
 
 def new():
-    
-    with open('2057.csv') as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        first = True
-        
-        _days = Days.Days()
+    _days = Days.Days()
+
+    with urllib.request.urlopen("http://localhost:8080/station") as url:
+        data = json.loads(url.read().decode())
         
         i = 0
-        for row in csv_reader:
-            # Skip first row
-            if first:
-                first = False
-                continue
-            """ 
-            _date                   = row[0],
-            _id                     = row[1],
-            _name                   = row[2],
-            _p_increment            = row[3], # Inches
-            _air_temp_average       = row[4], # Fahrenheit
-            _air_temp_max           = row[5], # Fahrenheit
-            _air_temp_min           = row[6], # Fahrenheit
-            _moist_2                = row[7],
-            _moist_4                = row[8],
-            _moist_8                = row[9],
-            _moist_20               = row[10],
-            _moist_40               = row[11],
-            _temp_2                 = row[12],
-            _temp_4                 = row[13],
-            _temp_8                 = row[14],
-            _temp_20                = row[15],
-            _temp_40                = row[16],
-            _humid                  = row[17],
-            _precip_accumulation    = row[19]
-            """
-            
-            _days.add_day(i, float( o_n(row[3]) ), float( o_n(row[7]) ))
-            i += 1
-
-        return _days
+        for station in data:
+            with urllib.request.urlopen("http://localhost:8080/day/" + str(station['id'])) as url2:
+                data2 = json.loads(url2.read().decode())
+                for day in data2:
+                    _days.add_day(i, day['date'], day['precip'], day['moisture'])
+            i += 1;
+    return _days
