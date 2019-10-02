@@ -5,6 +5,33 @@ import load
 import requests
 
 _s = load.scan()
+
+i = 0
+for station in _s:
+    print(str(i/len(_s)*100) + str("%"))
+    urlstring = "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultipleStationReport,metric/daily/start_of_period/id="
+    urlend = "%20AND%20network=%22SCAN%22%20AND%20outServiceDate=%222100-01-01%22%7Cname/2009-01-01,2019-01-01/stationId,name,PRCP::value,TAVG::value,TMAX::value,TMIN::value,SMS:-2:value:hourly%20MEAN,SMS:-4:value:hourly%20MEAN,SMS:-8:value:hourly%20MEAN,SMS:-20:value:hourly%20MEAN,SMS:-40:value:hourly%20MEAN,STO:-2:value:hourly%20MEAN,STO:-4:value:hourly%20MEAN,STO:-8:value:hourly%20MEAN,STO:-20:value:hourly%20MEAN,STO:-40:value:hourly%20MEAN,RHUM::value:hourly%20MEAN,LRADT::value?fitToScreen=false&sortBy=3%3A-1"
+    urlstring += "%22" + str(station._id) + "%22"
+    urlstring += urlend
+
+    df = pd.read_csv(urlstring, comment='#', error_bad_lines=False, delimiter=",")
+
+    df.to_csv("data/" + str(station._id) + ".csv")
+    i+=1
+exit(0)
+
+
+
+
+
+
+
+
+
+
+
+
+
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
@@ -51,7 +78,7 @@ def post_station():
             "moisture": moisture
         })
     r = requests.post(
-        "http://192.168.10.129:8080/day",
+        "http://192.168.10.183:8080/day",
         data=json.dumps(days),
         headers={'Content-type': 'application/json'}
     )
@@ -67,7 +94,7 @@ while currentStation < len(_s):
         print("\n")
 
         stations.append(int(i._id))
-        if counter < 13:
+        if counter < 190:
             print("Station with id: " + str(stations) + " has already been processed")
         else:
             print("Posting station with id: " + str(stations))
@@ -75,6 +102,7 @@ while currentStation < len(_s):
 
         print("\n")
         print("Data fetched successfully: ")
+        print("Station count = " + str(counter))
         currentStation += max
         index += 1
         stations.clear()
@@ -85,6 +113,5 @@ print(stations)
 print(len(stations)-1)
 
 """""
-[  "2030" ,"2085" ,"2090" ,"2091" ,"2083" ,"2053" ,"2175" ,"2115" ,"2179" ,"2056" ,"2176","2182", "2181", "2178", "2114", "2180", "2173", "2055", "2174", "2113", "2177", "2078", "2057"]
-    total = 23
+    stations with only nan values: 2009, 2012, 2017, 2013, 2005
 """""
