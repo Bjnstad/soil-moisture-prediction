@@ -10,13 +10,13 @@ i = 0
 for station in _s:
     print(str(i/len(_s)*100) + str("%"))
     urlstring = "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customMultipleStationReport,metric/daily/start_of_period/id="
-    urlend = "%20AND%20network=%22SCAN%22%20AND%20outServiceDate=%222100-01-01%22%7Cname/2009-01-01,2019-01-01/stationId,name,PRCP::value,TAVG::value,TMAX::value,TMIN::value,SMS:-2:value:hourly%20MEAN,SMS:-4:value:hourly%20MEAN,SMS:-8:value:hourly%20MEAN,SMS:-20:value:hourly%20MEAN,SMS:-40:value:hourly%20MEAN,STO:-2:value:hourly%20MEAN,STO:-4:value:hourly%20MEAN,STO:-8:value:hourly%20MEAN,STO:-20:value:hourly%20MEAN,STO:-40:value:hourly%20MEAN,RHUM::value:hourly%20MEAN,LRADT::value?fitToScreen=false&sortBy=3%3A-1"
+    urlend = "%20AND%20network=%22SCAN%22%20AND%20outServiceDate=%222100-01-01%22%7Cname/1990-01-01,2019-01-01/stationId,name,PRCP::value,TAVG::value,TMAX::value,TMIN::value,SMS:-2:value:hourly%20MEAN,SMS:-4:value:hourly%20MEAN,SMS:-8:value:hourly%20MEAN,SMS:-20:value:hourly%20MEAN,SMS:-40:value:hourly%20MEAN,STO:-2:value:hourly%20MEAN,STO:-4:value:hourly%20MEAN,STO:-8:value:hourly%20MEAN,STO:-20:value:hourly%20MEAN,STO:-40:value:hourly%20MEAN,RHUM::value:hourly%20MEAN,LRADT::value?fitToScreen=false&sortBy=3%3A-1"
     urlstring += "%22" + str(station._id) + "%22"
     urlstring += urlend
 
     df = pd.read_csv(urlstring, comment='#', error_bad_lines=False, delimiter=",")
 
-    df.to_csv("data/" + str(station._id) + ".csv")
+    df.to_csv("data2/" + str(station._id) + ".csv")
     i+=1
 exit(0)
 
