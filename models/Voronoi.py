@@ -1,7 +1,7 @@
 from scipy.spatial import Voronoi as V
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.point import Point
-from models.Station import SCAN, Weather
+from Station import SCAN, Weather
 from dateutil.parser import parse
 import geopy.distance
 import numpy as np
